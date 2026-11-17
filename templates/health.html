@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health FAQs - SmartHealth</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header class="topbar">
+    <a href="/" class="brand">💙 Smart<span>Health</span></a>
+    <nav>
+        <a href="/">Home</a>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/logout">Logout</a>
+    </nav>
+</header>
+
+<section class="health-hero">
+    <h1>Health Information Centre</h1>
+    <p>Explore common health questions, symptoms and general precautions.</p>
+    <input type="text" id="search" placeholder="🔍 Search health topics..." onkeyup="searchTopics()">
+</section>
+
+<section class="health-content">
+    <h2>Frequently Asked Questions</h2>
+
+    <div class="faq-list" id="faqList">
+
+        <details class="faq-item">
+            <summary>What is a healthy balanced diet?</summary>
+            <p>A balanced diet includes fruits, vegetables, whole grains, protein sources and adequate water. Individual nutritional needs may differ.</p>
+        </details>
+
+        <details class="faq-item">
+            <summary>How can I maintain good hygiene?</summary>
+            <p>Wash hands regularly, maintain oral hygiene, keep food clean and maintain a clean living environment.</p>
+        </details>
+
+        <details class="faq-item">
+            <summary>Why is drinking water important?</summary>
+            <p>Water supports normal body functions, temperature regulation and digestion. Fluid needs vary depending on activity, climate and health.</p>
+        </details>
+
+        <details class="faq-item">
+            <summary>Why is sleep important?</summary>
+            <p>Sleep supports concentration, learning, mood and general health. Maintain a regular sleep schedule.</p>
+        </details>
+
+        <details class="faq-item">
+            <summary>How can I prevent seasonal infections?</summary>
+            <p>Wash hands, cover coughs and sneezes, improve ventilation and follow recommended vaccinations.</p>
+        </details>
+
+        <details class="faq-item">
+            <summary>What should I do if I have a fever?</summary>
+            <p>Rest, drink fluids and monitor your symptoms. Seek medical advice if fever persists, worsens or causes concern.</p>
+        </details>
+
+        <details class="faq-item">
+            <summary>What is blood pressure?</summary>
+            <p>Blood pressure is the force of blood against artery walls. A healthcare professional can help interpret readings.</p>
+        </details>
+
+        <details class="faq-item">
+            <summary>Why is physical activity important?</summary>
+            <p>Regular age-appropriate physical activity supports heart health, strength, mood and general wellbeing.</p>
+        </details>
+
+    </div>
+</section>
+
+<section class="symptoms-section">
+    <h2>Common Health Topics</h2>
+    <p>General educational information about common symptoms.</p>
+
+    <div class="symptom-grid" id="symptomList">
+
+        <div class="symptom-card">
+            <h3>🤧 Common Cold</h3>
+            <p><b>Symptoms:</b> Runny nose, sneezing, sore throat and cough.</p>
+            <p><b>General care:</b> Rest, drink fluids and maintain hygiene.</p>
+        </div>
+
+        <div class="symptom-card">
+            <h3>🤒 Fever</h3>
+            <p><b>Symptoms:</b> Raised body temperature, chills and tiredness.</p>
+            <p><b>General care:</b> Rest, maintain hydration and monitor symptoms.</p>
+        </div>
+
+        <div class="symptom-card">
+            <h3>🤕 Headache</h3>
+            <p><b>Symptoms:</b> Pain or pressure in the head.</p>
+            <p><b>General care:</b> Rest and maintain regular meals and hydration.</p>
+        </div>
+
+        <div class="symptom-card">
+            <h3>🌿 Allergy</h3>
+            <p><b>Symptoms:</b> Sneezing, itching, watery eyes or rash.</p>
+            <p><b>General care:</b> Avoid known triggers and consult a healthcare professional.</p>
+        </div>
+
+        <div class="symptom-card">
+            <h3>🍽️ Indigestion</h3>
+            <p><b>Symptoms:</b> Bloating, discomfort or feeling full.</p>
+            <p><b>General care:</b> Eat regular meals and seek advice if symptoms continue.</p>
+        </div>
+
+        <div class="symptom-card">
+            <h3>😴 Sleep Difficulties</h3>
+            <p><b>Symptoms:</b> Trouble falling asleep or staying asleep.</p>
+            <p><b>General care:</b> Maintain a regular sleep routine.</p>
+        </div>
+
+    </div>
+</section>
+
+<section class="emergency">
+    <h2>⚠️ Important Health Warning</h2>
+    <p>
+        Severe breathing difficulty, chest pain, sudden weakness,
+        fainting or signs of stroke may indicate a medical emergency.
+        Do not rely on this website for diagnosis. Seek emergency
+        medical care immediately.
+    </p>
+    <p><b>In India: Call 112 for emergency assistance.</b></p>
+</section>
+
+<footer>
+    <h3>💙 Smart Healthcare Assistance</h3>
+    <p>Your Health, Our Priority</p>
+    <p>Educational information only. Not a substitute for medical care.</p>
+</footer>
+
+<script>
+function searchTopics() {
+    const value = document.getElementById("search").value.toLowerCase();
+
+    document.querySelectorAll(".faq-item, .symptom-card").forEach(item => {
+        item.style.display = item.innerText.toLowerCase().includes(value)
+            ? "" : "none";
+    });
+}
+</script>
+
+</body>
+</html>
