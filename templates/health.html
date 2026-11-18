@@ -3,13 +3,241 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Health FAQs - SmartHealth</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>SmartHealth Chatbot</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f1f5f9;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            background: white;
+            padding: 18px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px #00000010;
+        }
+
+        .brand {
+            font-size: 23px;
+            font-weight: bold;
+            color: #1769aa;
+            text-decoration: none;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #333;
+            margin-left: 20px;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            color: #1769aa;
+        }
+
+        .chat-container {
+            max-width: 850px;
+            margin: 35px auto;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 25px #00000012;
+        }
+
+        .chat-header {
+            background: #1769aa;
+            color: white;
+            padding: 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-header h2 {
+            font-size: 21px;
+        }
+
+        .chat-header p {
+            font-size: 13px;
+            margin-top: 6px;
+        }
+
+        .online {
+            font-size: 12px;
+            color: #d7ffe3;
+        }
+
+        .chat-box {
+            height: 420px;
+            overflow-y: auto;
+            padding: 22px;
+            background: #f8fafc;
+        }
+
+        .message {
+            display: flex;
+            margin-bottom: 18px;
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .message.bot {
+            justify-content: flex-start;
+        }
+
+        .bubble {
+            max-width: 75%;
+            padding: 13px 17px;
+            border-radius: 15px;
+            line-height: 1.6;
+            font-size: 14px;
+            overflow-wrap: anywhere;
+            white-space: pre-wrap;
+        }
+
+        .bot .bubble {
+            background: #e2efff;
+            color: #222;
+            border-bottom-left-radius: 3px;
+        }
+
+        .user .bubble {
+            background: #1769aa;
+            color: white;
+            border-bottom-right-radius: 3px;
+        }
+
+        .suggestions {
+            padding: 15px 20px;
+            background: white;
+            border-top: 1px solid #eee;
+        }
+
+        .suggestions p {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 12px;
+        }
+
+        .suggestions button {
+            background: #edf5ff;
+            border: 1px solid #c9ddf5;
+            color: #1769aa;
+            border-radius: 20px;
+            padding: 9px 14px;
+            margin: 4px;
+            cursor: pointer;
+        }
+
+        .suggestions button:hover {
+            background: #1769aa;
+            color: white;
+        }
+
+        .chat-input-area {
+            display: flex;
+            padding: 18px;
+            gap: 10px;
+            border-top: 1px solid #eee;
+        }
+
+        .chat-input-area input {
+            flex: 1;
+            padding: 14px;
+            border: 1px solid #ccc;
+            border-radius: 25px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .chat-input-area input:focus {
+            border-color: #1769aa;
+        }
+
+        .send-btn {
+            background: #1769aa;
+            color: white;
+            border: none;
+            padding: 12px 23px;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+
+        .send-btn:hover {
+            background: #104c80;
+        }
+
+        .send-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .clear-btn {
+            background: transparent;
+            border: 1px solid white;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .notice {
+            text-align: center;
+            padding: 15px;
+            color: #777;
+            font-size: 12px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
+        @media(max-width: 600px) {
+            .topbar {
+                padding: 15px;
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+
+            nav a {
+                margin-left: 8px;
+                font-size: 13px;
+            }
+
+            .chat-container {
+                margin: 15px 10px;
+            }
+
+            .chat-box {
+                height: 400px;
+            }
+
+            .bubble {
+                max-width: 90%;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
 <header class="topbar">
-    <a href="/" class="brand">💙 Smart<span>Health</span></a>
+    <a href="/" class="brand">💙 SmartHealth</a>
+
     <nav>
         <a href="/">Home</a>
         <a href="/dashboard">Dashboard</a>
@@ -17,131 +245,178 @@
     </nav>
 </header>
 
-<section class="health-hero">
-    <h1>Health Information Centre</h1>
-    <p>Explore common health questions, symptoms and general precautions.</p>
-    <input type="text" id="search" placeholder="🔍 Search health topics..." onkeyup="searchTopics()">
-</section>
+<div class="chat-container">
 
-<section class="health-content">
-    <h2>Frequently Asked Questions</h2>
+    <div class="chat-header">
+        <div>
+            <h2>💙 SmartHealth Assistant</h2>
+            <p>Your Personal Health Information Chatbot</p>
+            <span class="online">● Ready to help</span>
+        </div>
 
-    <div class="faq-list" id="faqList">
-
-        <details class="faq-item">
-            <summary>What is a healthy balanced diet?</summary>
-            <p>A balanced diet includes fruits, vegetables, whole grains, protein sources and adequate water. Individual nutritional needs may differ.</p>
-        </details>
-
-        <details class="faq-item">
-            <summary>How can I maintain good hygiene?</summary>
-            <p>Wash hands regularly, maintain oral hygiene, keep food clean and maintain a clean living environment.</p>
-        </details>
-
-        <details class="faq-item">
-            <summary>Why is drinking water important?</summary>
-            <p>Water supports normal body functions, temperature regulation and digestion. Fluid needs vary depending on activity, climate and health.</p>
-        </details>
-
-        <details class="faq-item">
-            <summary>Why is sleep important?</summary>
-            <p>Sleep supports concentration, learning, mood and general health. Maintain a regular sleep schedule.</p>
-        </details>
-
-        <details class="faq-item">
-            <summary>How can I prevent seasonal infections?</summary>
-            <p>Wash hands, cover coughs and sneezes, improve ventilation and follow recommended vaccinations.</p>
-        </details>
-
-        <details class="faq-item">
-            <summary>What should I do if I have a fever?</summary>
-            <p>Rest, drink fluids and monitor your symptoms. Seek medical advice if fever persists, worsens or causes concern.</p>
-        </details>
-
-        <details class="faq-item">
-            <summary>What is blood pressure?</summary>
-            <p>Blood pressure is the force of blood against artery walls. A healthcare professional can help interpret readings.</p>
-        </details>
-
-        <details class="faq-item">
-            <summary>Why is physical activity important?</summary>
-            <p>Regular age-appropriate physical activity supports heart health, strength, mood and general wellbeing.</p>
-        </details>
-
+        <button class="clear-btn" onclick="clearChat()">
+            Clear Chat
+        </button>
     </div>
-</section>
 
-<section class="symptoms-section">
-    <h2>Common Health Topics</h2>
-    <p>General educational information about common symptoms.</p>
+    <div class="chat-box" id="chatBox">
 
-    <div class="symptom-grid" id="symptomList">
+        <div class="message bot">
+            <div class="bubble">
+                Hello! 👋 Welcome to SmartHealth Assistant.
 
-        <div class="symptom-card">
-            <h3>🤧 Common Cold</h3>
-            <p><b>Symptoms:</b> Runny nose, sneezing, sore throat and cough.</p>
-            <p><b>General care:</b> Rest, drink fluids and maintain hygiene.</p>
-        </div>
+                I am here to help you understand common health conditions, symptoms and general health information.
 
-        <div class="symptom-card">
-            <h3>🤒 Fever</h3>
-            <p><b>Symptoms:</b> Raised body temperature, chills and tiredness.</p>
-            <p><b>General care:</b> Rest, maintain hydration and monitor symptoms.</p>
-        </div>
-
-        <div class="symptom-card">
-            <h3>🤕 Headache</h3>
-            <p><b>Symptoms:</b> Pain or pressure in the head.</p>
-            <p><b>General care:</b> Rest and maintain regular meals and hydration.</p>
-        </div>
-
-        <div class="symptom-card">
-            <h3>🌿 Allergy</h3>
-            <p><b>Symptoms:</b> Sneezing, itching, watery eyes or rash.</p>
-            <p><b>General care:</b> Avoid known triggers and consult a healthcare professional.</p>
-        </div>
-
-        <div class="symptom-card">
-            <h3>🍽️ Indigestion</h3>
-            <p><b>Symptoms:</b> Bloating, discomfort or feeling full.</p>
-            <p><b>General care:</b> Eat regular meals and seek advice if symptoms continue.</p>
-        </div>
-
-        <div class="symptom-card">
-            <h3>😴 Sleep Difficulties</h3>
-            <p><b>Symptoms:</b> Trouble falling asleep or staying asleep.</p>
-            <p><b>General care:</b> Maintain a regular sleep routine.</p>
+                How can I help you today? 😊
+            </div>
         </div>
 
     </div>
-</section>
 
-<section class="emergency">
-    <h2>⚠️ Important Health Warning</h2>
-    <p>
-        Severe breathing difficulty, chest pain, sudden weakness,
-        fainting or signs of stroke may indicate a medical emergency.
-        Do not rely on this website for diagnosis. Seek emergency
-        medical care immediately.
-    </p>
-    <p><b>In India: Call 112 for emergency assistance.</b></p>
-</section>
+    <div class="suggestions">
+        <p>💡 Try asking:</p>
+
+        <button onclick="askQuestion('What are the symptoms of fever?')">
+            🤒 Fever
+        </button>
+
+        <button onclick="askQuestion('What causes headache?')">
+            🤕 Headache
+        </button>
+
+        <button onclick="askQuestion('What are the symptoms of common cold?')">
+            🤧 Common Cold
+        </button>
+
+        <button onclick="askQuestion('How can I maintain a healthy diet?')">
+            🥗 Healthy Diet
+        </button>
+
+        <button onclick="askQuestion('How can I improve my sleep?')">
+            😴 Sleep
+        </button>
+    </div>
+
+    <form class="chat-input-area" id="chatForm">
+        <input
+            type="text"
+            id="userInput"
+            placeholder="Ask me anything about health..."
+            autocomplete="off"
+            required
+        >
+
+        <button type="submit" class="send-btn" id="sendBtn">
+            Send ➤
+        </button>
+    </form>
+
+    <div class="notice">
+        ⚠️ This chatbot provides general educational information,
+        not medical diagnosis or treatment.
+        Seek professional medical advice when needed.
+    </div>
+
+</div>
 
 <footer>
     <h3>💙 Smart Healthcare Assistance</h3>
     <p>Your Health, Our Priority</p>
-    <p>Educational information only. Not a substitute for medical care.</p>
 </footer>
 
 <script>
-function searchTopics() {
-    const value = document.getElementById("search").value.toLowerCase();
+    const chatBox = document.getElementById("chatBox");
+    const userInput = document.getElementById("userInput");
+    const chatForm = document.getElementById("chatForm");
+    const sendBtn = document.getElementById("sendBtn");
 
-    document.querySelectorAll(".faq-item, .symptom-card").forEach(item => {
-        item.style.display = item.innerText.toLowerCase().includes(value)
-            ? "" : "none";
+    function addMessage(message, sender) {
+        const messageDiv = document.createElement("div");
+        messageDiv.className = "message " + sender;
+
+        const bubble = document.createElement("div");
+        bubble.className = "bubble";
+        bubble.textContent = message;
+
+        messageDiv.appendChild(bubble);
+        chatBox.appendChild(messageDiv);
+
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        return messageDiv;
+    }
+
+    async function sendMessage(message) {
+        if (!message.trim() || sendBtn.disabled) return;
+
+        addMessage(message, "user");
+
+        userInput.value = "";
+        sendBtn.disabled = true;
+
+        const typing = addMessage("Typing...", "bot");
+
+        try {
+            const response = await fetch("/chat", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    message: message
+                })
+            });
+
+            const data = await response.json();
+
+            typing.remove();
+
+            if (!response.ok) {
+                throw new Error(data.error || "Server error");
+            }
+
+            addMessage(
+                data.reply || data.response ||
+                "Sorry, I couldn't generate a response.",
+                "bot"
+            );
+
+        } catch (error) {
+            typing.remove();
+
+            addMessage(
+                "Sorry, I could not connect to the chatbot. Please check the Flask backend.",
+                "bot"
+            );
+
+            console.error(error);
+
+        } finally {
+            sendBtn.disabled = false;
+            userInput.focus();
+        }
+    }
+
+    chatForm.addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        const message = userInput.value.trim();
+
+        sendMessage(message);
     });
-}
+
+    function askQuestion(question) {
+        sendMessage(question);
+    }
+
+    function clearChat() {
+        chatBox.innerHTML = "";
+
+        addMessage(
+            "Hello! 👋 Welcome back to SmartHealth Assistant. How can I help you today?",
+            "bot"
+        );
+    }
 </script>
 
 </body>

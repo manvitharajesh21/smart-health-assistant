@@ -545,3 +545,29 @@ footer {
         grid-template-columns: 1fr;
     }
 }
+
+.action-btn {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    margin: 3px;
+    font-weight: bold;
+}
+
+.approve-btn {
+    background: #16a34a;
+}
+
+.reject-btn {
+    background: #dc2626;
+}
+
+.approve-btn:hover {
+    background: #15803d;
+}
+
+.reject-btn:hover {
+    background: #b91c1c;
+}
